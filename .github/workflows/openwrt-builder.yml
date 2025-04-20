@@ -76,6 +76,8 @@ jobs:
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
+        git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
+        git clone https://github.com/pham38/luci-app-netspeedtest.git package/luci-app-netspeedtest
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
