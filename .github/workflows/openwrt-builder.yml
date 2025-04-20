@@ -36,7 +36,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
       
-    - name: 释放磁盘空间
+    - name: free disk space
       uses: jlumbroso/free-disk-space@main
       with:
         # this might remove tools that are actually needed,
@@ -78,6 +78,7 @@ jobs:
         cd openwrt
         git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
         git clone https://github.com/pham38/luci-app-netspeedtest.git package/luci-app-netspeedtest
+        curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
