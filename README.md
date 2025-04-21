@@ -1,4 +1,4 @@
-# UFI-003 OpenWrt Actions
+# UFI OpenWrt Actions
 
 **高通410随身WiFi自编译，适用于UFI-003**
 
