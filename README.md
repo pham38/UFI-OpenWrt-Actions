@@ -20,7 +20,6 @@
 - [peter-evans/repository-dispatch](https://github.com/peter-evans/repository-dispatch)
 - [lkiuyu/immortalwrt](https://github.com/lkiuyu/immortalwrt)
 - [immortalwrt](https://github.com/immortalwrt/immortalwrt)
-- [lkiuyu-immortalwrt-action](https://github.com/obanat/lkiuyu-immortalwrt-action)
 
 ## License
 
