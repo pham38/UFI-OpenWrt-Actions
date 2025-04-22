@@ -96,7 +96,7 @@ jobs:
         find dl -size -1024c -exec rm -f {} \;
 
     - name: Compile the ufi003 firmware
-      id: compile
+      id: compile-ufi003
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
@@ -115,7 +115,7 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Compile the ufi003-docker-lxc firmware
-      id: compile
+      id: compile-ufi003-docker-lxc
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
@@ -134,7 +134,7 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Compile the uz801 firmware
-      id: compile
+      id: compile-uz801
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
@@ -153,7 +153,7 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Compile the uz801-docker-lxc firmware
-      id: compile
+      id: compile-uz801-docker-lxc
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
