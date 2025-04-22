@@ -1,6 +1,6 @@
 # UFI OpenWrt Actions
 
-**高通410随身WiFi自编译，适用于UFI-003**
+**高通410随身WiFi自编译，适用于UFI-003、UZ801**
 
 [2025.04.20-2221](https://github.com/pham38/lkiuyu-immortalwrt-action/releases/tag/2025.04.20-2221)，内核版本6.6.87，包含以下插件：
 
