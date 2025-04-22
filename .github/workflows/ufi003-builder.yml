@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: ufi-003 OpenWrt Builder
+name: ufi003 Builder
 
 on:
   repository_dispatch:
