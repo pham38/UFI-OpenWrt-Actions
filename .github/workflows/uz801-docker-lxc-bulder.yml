@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: uz801 OpenWrt Builder
+name: uz801-docker-lxc Builder
 
 on:
   repository_dispatch:
