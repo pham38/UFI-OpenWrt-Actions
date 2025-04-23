@@ -98,8 +98,9 @@ jobs:
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
-        mv openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-boot.img openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-boot.img
-        mv openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-system.img openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-system.img
+        cd openwrt/bin/targets/msm89xx/msm8916
+        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-boot.img
+        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-system.img
  
     - name: Load ufi003 configuration
       run: |
@@ -132,8 +133,9 @@ jobs:
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
-        mv openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-boot.img openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-boot.img
-        mv openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-system.img openwrt/bin/targets/msm89xx/msm8916/immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-system.img
+        cd openwrt/bin/targets/msm89xx/msm8916
+        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-boot.img
+        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-system.img
     
     - name: Load uz801 configuration
       run: |
@@ -151,10 +153,6 @@ jobs:
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Check space usage
-      if: (!cancelled())
-      run: df -hT
-
     - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
@@ -166,12 +164,13 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/msm89xx/msm8916/
+        tar -czvf packages.tar.gz packages
         rm -rf packages
         rm *.buildinfo
         rm *.manifest
         rm profiles.json
         rm sha256sums
-        sha256sum *.img > sha256sums
+        sha256sum *.* > sha256sums
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware directory
