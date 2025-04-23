@@ -165,7 +165,7 @@ jobs:
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        cd openwrt/bin/targets/*/*
+        cd openwrt/bin/targets/msm89xx/msm8916/
         rm -rf packages
         rm *.buildinfo
         rm *.manifest
