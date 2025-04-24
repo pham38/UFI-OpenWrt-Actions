@@ -1,4 +1,4 @@
-name: test
+name: ufi003 Builder
 
 on:
   repository_dispatch:
@@ -8,10 +8,7 @@ env:
   REPO_URL: https://github.com/lkiuyu/immortalwrt
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_ufi003_FILE: ufi003.config
-  CONFIG_ufi003-docker-lxc_FILE: ufi003-docker-lxc.config
-  CONFIG_uz801_FILE: uz801.config
-  CONFIG_uz801-docker-lxc_FILE: uz801-docker-lxc.config
+  CONFIG_FILE: test.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
@@ -26,21 +23,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-
+      
     - name: Setup TMate Session
       uses: mxschmitt/action-tmate@v3
       with:
         detached: true
-      
-    - name: free disk space
-      uses: jlumbroso/free-disk-space@main
-      with:
-        tool-cache: true
-        android: false
-        dotnet: true
-        haskell: true
-        large-packages: true
-        swap-storage: true
         
     - name: Initialization environment
       env:
@@ -79,10 +66,10 @@ jobs:
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load ufi003-docker-lxc configuration
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_ufi003-docker-lxc_FILE ] && mv $CONFIG_ufi003-docker-lxc_FILE openwrt/.config
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
@@ -95,118 +82,20 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-    
-    - name: Compile the ufi003-docker-lxc firmware
-      id: compile-ufi003-docker-lxc
+
+    - name: Compile the firmware
+      id: compile
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
-        
-    - name: Rename the ufi003-docker-lxc firmware
-      id: rename-ufi003-docker-lxc-firmware
-      run: |        
-        cd /home/runner/work/UFI-OpenWrt-Actions/UFI-OpenWrt-Actions/openwrt/bin/targets/msm89xx/msm8916
-        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-boot.img
-        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-system.img
- 
-    - name: Load ufi003 configuration
-      run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_ufi003_FILE ] && mv $CONFIG_ufi003_FILE openwrt/.config
-        chmod +x $DIY_P2_SH
-        cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
-
-    - name: Compile the ufi003 firmware
-      id: compile-ufi003
-      run: |
-        cd openwrt
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT  
-
-    - name: Load uz801-docker-lxc configuration
-      run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_uz801-docker-lxc_FILE ] && mv $CONFIG_uz801-docker-lxc_FILE openwrt/.config
-        chmod +x $DIY_P2_SH
-        cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
-
-    - name: Compile the uz801-docker-lxc firmware
-      id: compile-uz801-docker-lxc
-      run: |
-        cd openwrt
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: Rename the uz801-docker-lxc firmware
-      id: rename-uz801-docker-lxc-firmware
-      run: |        
-        cd /home/runner/work/UFI-OpenWrt-Actions/UFI-OpenWrt-Actions/openwrt/bin/targets/msm89xx/msm8916
-        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-boot.img
-        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-system.img
-    
-    - name: Load uz801 configuration
-      run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_uz801_FILE ] && mv $CONFIG_uz801_FILE openwrt/.config
-        chmod +x $DIY_P2_SH
-        cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
-
-    - name: Compile the uz801 firmware
-      id: compile-uz801
-      run: |
-        cd openwrt
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: Upload bin directory
-      uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-      with:
-        path: openwrt/bin
 
     - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        tar -czvf packages.tar.gz packages
         rm -rf packages
-        rm *.buildinfo
-        rm *.manifest
-        rm profiles.json
-        rm sha256sums
-        sha256sum *.* > sha256sums
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: Upload firmware directory
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        path: ${{ env.FIRMWARE }}
-
-    - name: Generate release tag
-      id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: |
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-        touch release.txt
-        [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
-        echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: Upload firmware to release
-      uses: softprops/action-gh-release@master
-      if: steps.tag.outputs.status == 'success' && !cancelled()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
