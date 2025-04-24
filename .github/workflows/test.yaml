@@ -1,4 +1,4 @@
-name: ufi003 Builder
+name: test Builder
 
 on:
   repository_dispatch:
@@ -99,3 +99,6 @@ jobs:
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Setup TMate Session
+      uses: mxschmitt/action-tmate@v3
