@@ -77,7 +77,6 @@ jobs:
         make -j1 V=s
         
     - name: Rename the ufi003-docker firmware
-      id: rename-ufi003-docker-firmware
       run: |        
         cd openwrt
         cd bin/targets/*/*
@@ -113,7 +112,6 @@ jobs:
         make -j1 V=s
 
     - name: Rename the uz801-docker firmware
-      id: rename-uz801-docker-firmware
       run: |        
         cd openwrt
         cd bin/targets/*/*
