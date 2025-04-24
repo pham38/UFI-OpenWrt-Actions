@@ -102,9 +102,9 @@ jobs:
     - name: Rename the ufi003-docker-lxc firmware
       id: rename-ufi003-docker-lxc-firmware
       run: |        
-        cd /home/runner/work/UFI-OpenWrt-Actions/UFI-OpenWrt-Actions/openwrt/bin/targets/msm89xx/msm8916
-        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-boot.img
-        mv immortalwrt-msm89xx-msm8916-openstick-ufi003-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-system.img
+        cd openwrt/bin/targets/*/*
+        mv *-ufi003-*-boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-boot.img
+        mv *-ufi003-*-system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-lxc-ext4-system.img
  
     - name: Load ufi003 configuration
       run: |
@@ -141,9 +141,9 @@ jobs:
     - name: Rename the uz801-docker-lxc firmware
       id: rename-uz801-docker-lxc-firmware
       run: |        
-        cd /home/runner/work/UFI-OpenWrt-Actions/UFI-OpenWrt-Actions/openwrt/bin/targets/msm89xx/msm8916
-        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-boot.img
-        mv immortalwrt-msm89xx-msm8916-openstick-uz801-ext4-system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-system.img
+        cd openwrt/bin/targets/*/*
+        mv *-uz801-*-boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-boot.img
+        mv *-uz801-*-system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-lxc-ext4-system.img
     
     - name: Load uz801 configuration
       run: |
@@ -172,7 +172,6 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        tar -czvf packages.tar.gz packages
         rm -rf packages
         rm *.buildinfo
         rm *.manifest
