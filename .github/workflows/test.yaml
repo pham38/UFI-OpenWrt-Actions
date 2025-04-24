@@ -27,15 +27,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
 
-    - uses: shaowenchen/debugger-action@v1
-      name: debugger
-      timeout-minutes: 360
-      continue-on-error: true
+    - name: Setup TMate Session
+      uses: mxschmitt/action-tmate@v3
       with:
-        frp_server_addr: 66.103.206.232
-        frp_server_port: 17000
-        frp_token: i2y5cuDP7sDN1
-        ssh_port: 17001
+        detached: true
       
     - name: free disk space
       uses: jlumbroso/free-disk-space@main
