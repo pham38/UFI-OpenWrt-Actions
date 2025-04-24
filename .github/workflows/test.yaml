@@ -1,4 +1,4 @@
-name: All Builder
+name: test
 
 on:
   repository_dispatch:
