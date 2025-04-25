@@ -55,72 +55,45 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: Load ufi003-docker configuration
+    - name: Compile the ufi003-docker firmware
       run: |
         cp ufi003-docker.config openwrt/.config
-
-    - name: Download package
-      id: package
-      run: |
         cd openwrt
         make oldconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
-    - name: Compile the ufi003-docker firmware
-      id: compile-ufi003-docker
-      run: |
-        cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT
-        
-    - name: Rename the ufi003-docker firmware
-      run: |        
-        cd openwrt/bin/targets/*/*
+        echo "status=success" >> $GITHUB_OUTPUT     
+        cd bin/targets/*/*
         mv *ufi003*boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-boot.img
         mv *ufi003*system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-system.img
  
-    - name: Load ufi003 configuration
+    - name: Compile the ufi003 firmware
       run: |
         cp ufi003.config openwrt/.config
-
-    - name: Compile the ufi003 firmware
-      id: compile-ufi003
-      run: |
         cd openwrt
         make oldconfig
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: Load uz801-docker configuration
-      run: |
-        cp uz801-docker.config openwrt/.config
 
     - name: Compile the uz801-docker firmware
-      id: compile-uz801-docker
       run: |
+        cp uz801-docker.config openwrt/.config
         cd openwrt
         make oldconfig
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT
-     
-    - name: Rename the uz801-docker firmware
-      run: |        
-        cd openwrt/bin/targets/*/*
+        echo "status=success" >> $GITHUB_OUTPUT       
+        cd bin/targets/*/*
         mv *uz801*boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-ext4-boot.img
         mv *uz801*system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-ext4-system.img
     
-    - name: Load uz801 configuration
+    - name: Compile the uz801 firmware
       run: |
         cp uz801.config openwrt/.config
-
-    - name: Compile the uz801 firmware
-      id: compile-uz801
-      run: |
         cd openwrt
         make oldconfig
         echo -e "$(nproc) thread compile"
