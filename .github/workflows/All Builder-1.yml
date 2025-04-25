@@ -1,4 +1,4 @@
-name: All Builder-1
+name: All Builder
 
 on:
   repository_dispatch:
@@ -7,7 +7,6 @@ on:
 env:
   REPO_URL: https://github.com/lkiuyu/immortalwrt
   REPO_BRANCH: master
-  FEEDS_CONF: feeds.conf.default
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -45,21 +44,16 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /mnt/workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-    - name: Load custom feeds
+    - name: Update feeds & Install feeds & Load custom feeds
       run: |
-        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
         git clone https://github.com/pham38/luci-app-netspeedtest.git package/luci-app-netspeedtest
         curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
-
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
-
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
 
     - name: Load ufi003-docker configuration
       run: |
@@ -69,6 +63,7 @@ jobs:
       id: package
       run: |
         cd openwrt
+        make oldconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -83,7 +78,7 @@ jobs:
         
     - name: Rename the ufi003-docker firmware
       run: |        
-        cd /mnt/workdir/openwrt/bin/targets/*/*
+        cd openwrt/bin/targets/*/*
         mv *ufi003*boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-boot.img
         mv *ufi003*system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-system.img
  
@@ -95,6 +90,7 @@ jobs:
       id: compile-ufi003
       run: |
         cd openwrt
+        make oldconfig
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
@@ -107,13 +103,14 @@ jobs:
       id: compile-uz801-docker
       run: |
         cd openwrt
+        make oldconfig
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
      
     - name: Rename the uz801-docker firmware
       run: |        
-        cd /mnt/workdir/openwrt/bin/targets/*/*
+        cd openwrt/bin/targets/*/*
         mv *uz801*boot.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-ext4-boot.img
         mv *uz801*system.img immortalwrt-msm89xx-msm8916-openstick-uz801-docker-ext4-system.img
     
@@ -125,6 +122,7 @@ jobs:
       id: compile-uz801
       run: |
         cd openwrt
+        make oldconfig
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
@@ -139,8 +137,7 @@ jobs:
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        cd openwrt
-        cd bin/targets/*/*
+        cd openwrt/bin/targets/*/*
         rm -rf packages
         rm *.buildinfo
         rm *.manifest
