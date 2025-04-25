@@ -39,6 +39,11 @@ jobs:
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
 
+    - name: Setup TMate Session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        detached: true
+        
     - name: Clone source code
       working-directory: /mnt/workdir
       run: |
@@ -89,7 +94,7 @@ jobs:
         
     - name: Rename the ufi003-docker firmware
       run: |        
-        cd cd /mnt/workdir/openwrt/bin/targets/*/*
+        cd /mnt/workdir/openwrt/bin/targets/*/*
         mv *ufi003*boot.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-boot.img
         mv *ufi003*system.img immortalwrt-msm89xx-msm8916-openstick-ufi003-docker-ext4-system.img
  
@@ -191,6 +196,3 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
-
-    - name: Setup TMate Session
-      uses: mxschmitt/action-tmate@v3
