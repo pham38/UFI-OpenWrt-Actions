@@ -1,4 +1,4 @@
-name: All Builder-1
+name: All Builder
 
 on:
   repository_dispatch:
