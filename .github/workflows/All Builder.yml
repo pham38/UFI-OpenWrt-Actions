@@ -56,7 +56,7 @@ jobs:
         ./scripts/feeds install -a
         git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
         git clone https://github.com/pham38/luci-app-netspeedtest.git package/luci-app-netspeedtest
-        curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe
+        curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         $GITHUB_WORKSPACE/$DIY_P1_SH
