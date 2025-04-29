@@ -1,4 +1,4 @@
-name: ufi003-test Builder
+name: ufi003 Builder
 
 on:
   repository_dispatch:
