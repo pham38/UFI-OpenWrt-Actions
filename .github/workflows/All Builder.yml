@@ -150,7 +150,7 @@ jobs:
         rm *.manifest
         rm profiles.json
         rm sha256sums
-        sha256sum *.* > sha256sums
+        sha256sum *.* > sha256sums.sha256
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
