@@ -50,7 +50,6 @@ jobs:
         cd openwrt
         git clone https://github.com/pham38/ufi-luci-app.git package/ufi-luci-app
         git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
-        echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >> "feeds.conf.default"
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
