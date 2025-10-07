@@ -36,6 +36,11 @@ jobs:
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
 
+    - name: Setup TMate Session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        detached: true
+
     - name: Clone source code
       working-directory: /mnt/workdir
       run: |
